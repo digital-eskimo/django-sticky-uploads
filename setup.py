@@ -8,5 +8,5 @@ setup(name='django-sticky-uploads',
       author='Simon Meers',
       author_email='simon@simonmeers.com',
       url='http://github.com/digital-eskimo/django-sticky-uploads',
-      packages=['sticky-uploads',]
+      packages=['sticky_uploads',]
      )
