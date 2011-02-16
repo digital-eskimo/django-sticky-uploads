@@ -42,9 +42,7 @@ class StickyFileInput(FileInput):
         super(StickyFileInput, self).__init__(*args, **kwargs)
 
     def flush_sticky_storage(self, force=False):
-        print "TOTAL files", count_files(settings.DIR)
         if count_files(settings.DIR) > settings.MAX_STICKY_FILES:
-            print "Killing tree"
             shutil.rmtree(settings.DIR, ignore_errors=True)
             return
 
@@ -52,14 +50,11 @@ class StickyFileInput(FileInput):
             user_path = os.path.join(settings.DIR, user_directory)
             user_files = os.listdir(user_path)
 
-            print "Files in", user_path, count_files(user_path)
             if count_files(user_path) > settings.MAX_FILES_PER_USER:
-                print "User over limit"
                 shutil.rmtree(user_path, ignore_errors=True)
                 continue
 
             for directory_name in user_files:
-                print "DIRECTORY_NAME", directory_name
                 try:
                     directory_age = time.time() - float(directory_name)
                 except ValueError:
@@ -68,7 +63,6 @@ class StickyFileInput(FileInput):
                 if directory_age > settings.STICKINESS or force:
                     if not os.path.isdir(path): # not a directory!?
                         continue # better safe than sorry
-                    print "old directory"
                     shutil.rmtree(path, ignore_errors=True)
 
             if len(user_files) == 0: # prune empty directories
