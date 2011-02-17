@@ -45,6 +45,9 @@ class StickyFileInput(SuperFileInput):
         super(StickyFileInput, self).__init__(*args, **kwargs)
 
     def flush_sticky_storage(self, force=False):
+        if not os.path.exists(settings.DIR):
+            return # nothing to flush
+
         if count_files(settings.DIR) > settings.MAX_STICKY_FILES:
             shutil.rmtree(settings.DIR, ignore_errors=True)
             return
