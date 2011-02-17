@@ -3,7 +3,10 @@ import time
 import errno
 import shutil
 from django.forms.fields import FileField, ImageField
-from django.forms.widgets import FileInput
+try:
+    from django.forms.widgets import ClearableFileInput as SuperFileInput
+except ImportError:
+    from django.forms.widgets import FileInput as SuperFileInput
 from django.utils.safestring import mark_safe
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from . import settings
@@ -23,7 +26,7 @@ def make_directories(path):
 
 #---[ Classes ]----------------------------------------------------------------
 
-class StickyFileInput(FileInput):
+class StickyFileInput(SuperFileInput):
     """ A FileInput which retains uploaded files between requests.
 
     This is achieved by storing temporary copies of uploaded files using
@@ -86,7 +89,7 @@ class StickyFileInput(FileInput):
         return ''
 
     def render(self, name, value, attrs=None):
-        normal = super(StickyFileInput, self).render(name, None, attrs=attrs)
+        normal = super(StickyFileInput, self).render(name, value, attrs=attrs)
         return mark_safe(u"%s%s" % (self.get_hidden_inputs(name), normal))
 
     def get_sticky_path(self):
@@ -133,7 +136,10 @@ class StickyFileInput(FileInput):
 
         self.user_token = data.get('csrfmiddlewaretoken', None)
 
-        value = files.get(name, None) # look for normal file
+        # look for normal file
+        value = super(
+            StickyFileInput, self).value_from_datadict(data, files, name)
+
         if value: # got one, save a temporary copy just in case
             self.sticky_file_name = value.name
             self.sticky_session_id = '%.6f' % time.time()
