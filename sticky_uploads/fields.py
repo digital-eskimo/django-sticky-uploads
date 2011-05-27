@@ -143,7 +143,8 @@ class StickyFileInput(SuperFileInput):
         value = super(
             StickyFileInput, self).value_from_datadict(data, files, name)
 
-        if value: # got one, save a temporary copy just in case
+        if value and hasattr(value, 'name'):
+            # got one, save a temporary copy just in case
             self.sticky_file_name = value.name
             self.sticky_session_id = '%.6f' % time.time()
             self.save_sticky_copy(value.file)
