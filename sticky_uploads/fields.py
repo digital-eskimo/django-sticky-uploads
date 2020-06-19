@@ -20,7 +20,7 @@ def make_directories(path):
     """ Make directories recursively; don't worry if they all exist already """
     try:
         os.makedirs(os.path.dirname(path))
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST: # don't complain if already exists
             raise
 
@@ -115,7 +115,7 @@ class StickyFileInput(SuperFileInput):
     def load_sticky_copy(self):
         try:
             return open(self.get_sticky_path(), 'r')
-        except ValueError, IOError: # missing data or cannot find file
+        except (ValueError, IOError): # missing data or cannot find file
             # throw away useless data so we don't tell user we have their file
             self.sticky_session_id = None
             self.sticky_file_name = None
