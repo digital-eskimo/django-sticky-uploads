@@ -107,14 +107,14 @@ class StickyFileInput(SuperFileInput):
         self.flush_sticky_storage()
         path = self.get_sticky_path()
         make_directories(path)
-        sticky_file = open(path, 'w')
+        sticky_file = open(path, 'wb')
         source.seek(0) # rewind just in case
         sticky_file.write(source.read()) # copy data
         source.seek(0) # rewind again
 
     def load_sticky_copy(self):
         try:
-            return open(self.get_sticky_path(), 'r')
+            return open(self.get_sticky_path(), 'rb')
         except (ValueError, IOError): # missing data or cannot find file
             # throw away useless data so we don't tell user we have their file
             self.sticky_session_id = None
