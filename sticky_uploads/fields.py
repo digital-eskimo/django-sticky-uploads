@@ -91,8 +91,8 @@ class StickyFileInput(SuperFileInput):
                 self.sticky_session_id))
         return ''
 
-    def render(self, name, value, attrs=None):
-        normal = super(StickyFileInput, self).render(name, value, attrs=attrs)
+    def render(self, name, value, attrs=None, renderer=None):
+        normal = super().render(name, value, attrs=attrs, renderer=None)
         return mark_safe(u"%s%s" % (self.get_hidden_inputs(name), normal))
 
     def get_sticky_path(self):
